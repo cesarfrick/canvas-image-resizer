@@ -1,0 +1,15 @@
+{
+    "undef"        : true,
+    "unused"       : true,
+    "curly"        : true,
+    "indent"       : 4,
+    "devel"        : true,
+    "laxcasebreak" : true,
+    "globals"      : {
+      "window"         : true,
+      "document"       : true,
+      "XMLHttpRequest" : true,
+      "FileReader"     : true,
+      "Image"          : true
+    }
+}

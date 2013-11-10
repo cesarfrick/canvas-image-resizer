@@ -1,0 +1,15 @@
+main{
+    width:40%;
+    margin:1em auto;
+}
+form{
+    position:relative;
+}
+canvas{
+    background:url(img/placeholder.jpg) center no-repeat;
+    background-size:cover;
+    border-radius:6px;
+    box-shadow:0 2px 4px #999;
+    margin:1em auto;
+    transition:all 1s;
+}
