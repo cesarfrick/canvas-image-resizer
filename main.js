@@ -55,23 +55,13 @@
                     scaleHeight = settings.maxHeight,
                     ratio      = this.height / this.width;
 
-                if( scaleWidth && scaleHeight ){
-                    if( this.height > this.width ){
-                        if( this.height < scaleHeight ){
-                            scaleHeight = this.height;
-                            scaleWidth  = scaleHeight * ratio;
-                        }else if( this.width < scaleWidth ){
-                            scaleWidth  = this.width;
-                            scaleHeight = scaleWidth * ratio;
-                        }
-                    }
-                }else if( scaleWidth ){
+                if( this.height > this.width ){
+                    if( scaleHeight > this.height ){ scaleHeight = this.height; }
+                    scaleWidth = scaleHeight / ratio;
+                }else if( this.width >= this.height ){
+                    if( scaleWidth > this.width ){ scaleWidth = this.width; }
                     scaleHeight = scaleWidth * ratio;
-
-                }else if( scaleHeight ){
-                    scaleWidth = scaleHeight * ratio;
                 }
-
 
                 settings.canvas.height = scaleHeight;
                 settings.canvas.width  = scaleWidth;
@@ -95,7 +85,8 @@
         settings = {
             canvas       : doc.getElementById( 'img-canvas' ),
             fileSelector : doc.getElementById( 'img-selector' ),
-            maxWidth   : 400
+            maxWidth     : 400,
+            maxHeight    : 400
         };
         init();
     };
