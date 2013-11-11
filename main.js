@@ -1,31 +1,19 @@
-/*
- * Auto-generated content from the Brackets New Project extension.  Enjoy!
+/**
+ * Image Resize
+ * This module loads a local image and resizes it using canvas.
+ * You can set the maxHeight, maxWidth or both.
  */
-(function(win, doc){
+
+var imageResize = (function(){
     'use strict';
-    var settings = {},
-    /*loadAjax = function( src, callback ){
-        var ajax = new XMLHttpRequest();
 
-        ajax.onreadystatechange = function(){
-            if( ajax.readyState === 4 && ajax.status === 200  ){
-                if( callback ){
-                    callback( ajax.status, ajax.responseText );
-                }else{
-                    return ajax.responseText;
-                }
-            }else{
-                if( callback ){
-                    callback( ajax.status, ajax.statusText );
-                }else{
-                    return ajax.statusText;
-                }
-            }
-        };
-
-        ajax.open( 'get', src, true );
-        ajax.send();
-    },*/
+    var __self = this,
+    settings = {
+        canvas      : {},
+        fileSelector: {},
+        maxWidth    : 100,
+        maxHeight   : 100
+    },
     handleFileProgress = function( evt ){
         if( evt.lengthComputable ){
             var percentLoaded = Math.round( ( evt.loaded / evt.total ) * 100 );
@@ -50,21 +38,21 @@
             })( evt.target.files[0] );
 
             newImage.addEventListener('load', function(){
-                var context    = settings.canvas.getContext( '2d' ),
-                    scaleWidth = settings.maxWidth,
-                    scaleHeight = settings.maxHeight,
-                    ratio      = this.height / this.width;
+                var context     = __self.settings.canvas.getContext( '2d' ),
+                    scaleWidth  = __self.settings.maxWidth,
+                    scaleHeight = __self.settings.maxHeight,
+                    ratio       = this.height / this.width;
 
-                if( this.height > this.width ){
+                if( this.height >= this.width ){
                     if( scaleHeight > this.height ){ scaleHeight = this.height; }
                     scaleWidth = scaleHeight / ratio;
-                }else if( this.width >= this.height ){
+                }else if( this.width > this.height ){
                     if( scaleWidth > this.width ){ scaleWidth = this.width; }
                     scaleHeight = scaleWidth * ratio;
                 }
 
-                settings.canvas.height = scaleHeight;
-                settings.canvas.width  = scaleWidth;
+                __self.settings.canvas.height = scaleHeight;
+                __self.settings.canvas.width  = scaleWidth;
                 context.drawImage( this, 0, 0, scaleWidth, scaleHeight );
             });
 
@@ -72,22 +60,30 @@
         }
 
     },
-    init = function(){
-        settings.canvas.addEventListener( 'click', function(){
-            settings.fileSelector.click();
+    set = function(){
+        __self.settings.canvas.addEventListener( 'click', function(){
+            __self.settings.fileSelector.click();
         });
 
-        settings.fileSelector.style.display = 'none';
-        settings.fileSelector.onchange = loadFile;
+        __self.settings.fileSelector.style.display = 'none';
+        __self.settings.fileSelector.onchange = loadFile;
     };
 
+    this.settings = settings;
+
+    this.init = set;
+});
+
+(function(win, doc){
+    'use strict';
+    var ir = new imageResize();
     win.onload = function(){
-        settings = {
+        ir.settings = {
             canvas       : doc.getElementById( 'img-canvas' ),
             fileSelector : doc.getElementById( 'img-selector' ),
             maxWidth     : 400,
             maxHeight    : 400
         };
-        init();
+        ir.init();
     };
 })(window, document);
