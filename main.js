@@ -8,11 +8,13 @@ var imageResize = (function(){
     'use strict';
 
     var __self = this,
-    settings = {
+    defaults = {
         canvas      : {},
         fileSelector: {},
         maxWidth    : 100,
-        maxHeight   : 100
+        maxHeight   : 100,
+        imgNameField: 'img_name',
+        imgDataField: 'img_data'
     },
     handleFileProgress = function( evt ){
         if( evt.lengthComputable ){
@@ -38,9 +40,13 @@ var imageResize = (function(){
                 };
             })( evt.target.files[0] );
 
+            console.log(  __self.settings );
+
             newImage.addEventListener('load', function(){
                 var canvas      = __self.settings.canvas,
                     context     = canvas.getContext( '2d' ),
+                    hiddenName  = document.getElementsByName( __self.settings.imgNameField )[0],
+                    hiddenFile  = document.getElementsByName( __self.settings.imgDataField )[0],
                     scaleWidth  = __self.settings.maxWidth,
                     scaleHeight = __self.settings.maxHeight,
                     ratio       = this.height / this.width;
@@ -53,9 +59,27 @@ var imageResize = (function(){
                     scaleHeight = scaleWidth * ratio;
                 }
 
+
                 canvas.height = scaleHeight;
                 canvas.width  = scaleWidth;
                 context.drawImage( this, 0, 0, scaleWidth, scaleHeight );
+
+                if( !hiddenName ){
+                    hiddenName       = document.createElement( 'input' );
+                    hiddenName.type  = 'hidden';
+                    hiddenName.name  = __self.settings.imgNameField;
+                }
+                hiddenName.value = newImage.getAttribute( 'data-name' );
+                canvas.parentElement.appendChild( hiddenName );
+
+                if( !hiddenFile ){
+                    hiddenFile       = document.createElement( 'input' );
+                    hiddenFile.type  = 'hidden';
+                    hiddenFile.name  = __self.settings.imgDataField;
+                }
+                hiddenFile.value = canvas.toDataURL( newImage.getAttribute( 'data-type' ) );
+                canvas.parentElement.appendChild( hiddenFile );
+
             });
 
             reader.readAsDataURL( evt.target.files[0] );
@@ -63,6 +87,9 @@ var imageResize = (function(){
 
     },
     set = function(){
+        for( var prop in defaults ){
+            if( __self.settings[prop] === undefined ){ __self.settings[prop] = defaults[prop]; }
+        }
         __self.settings.canvas.addEventListener( 'click', function(){
             __self.settings.fileSelector.click();
         });
@@ -71,7 +98,7 @@ var imageResize = (function(){
         __self.settings.fileSelector.onchange = loadFile;
     };
 
-    this.settings = settings;
+    this.settings = {};
 
     this.init = set;
 });
