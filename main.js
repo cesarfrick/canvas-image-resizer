@@ -16,12 +16,12 @@ var imageResize = (function(){
     },
     handleFileProgress = function( evt ){
         if( evt.lengthComputable ){
-            var percentLoaded = Math.round( ( evt.loaded / evt.total ) * 100 );
-            console.info( percentLoaded + '%' );
+            var loaded = Math.round( evt.loaded / evt.total );
+            __self.settings.canvas.style.opacity = loaded;
         }
     },
     handleFileComplete = function(){
-        console.log( 'Complete' );
+        __self.settings.canvas.style.opacity = 1;
     },
     loadFile = function( evt ){
         if( evt.target.files[0].type.match( 'image.*' ) ){
@@ -34,11 +34,13 @@ var imageResize = (function(){
                 return function( evt ){
                     newImage.src = evt.target.result;
                     newImage.setAttribute( 'data-name', thisFile.name );
+                    newImage.setAttribute( 'data-type', thisFile.type );
                 };
             })( evt.target.files[0] );
 
             newImage.addEventListener('load', function(){
-                var context     = __self.settings.canvas.getContext( '2d' ),
+                var canvas      = __self.settings.canvas,
+                    context     = canvas.getContext( '2d' ),
                     scaleWidth  = __self.settings.maxWidth,
                     scaleHeight = __self.settings.maxHeight,
                     ratio       = this.height / this.width;
@@ -51,8 +53,8 @@ var imageResize = (function(){
                     scaleHeight = scaleWidth * ratio;
                 }
 
-                __self.settings.canvas.height = scaleHeight;
-                __self.settings.canvas.width  = scaleWidth;
+                canvas.height = scaleHeight;
+                canvas.width  = scaleWidth;
                 context.drawImage( this, 0, 0, scaleWidth, scaleHeight );
             });
 
